@@ -3,9 +3,12 @@ package application;
 import java.time.LocalDate;
 import java.util.Date;
 
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 public class Tache {
 	private String nom;
 	private String description;
+	private int tempsRequise;
 	private LocalDate dateLimite;//Check if it should be date type or String. What does DatePicker return??? str
 	private int valeurSur10;
 
@@ -16,6 +19,7 @@ public class Tache {
 	public Tache(String nom, String description) {
 		this.nom = nom;
 		this.description = description;
+		this.tempsRequise = 0;
 		this.dateLimite = null;
 		this.valeurSur10 = 0;
 	}
@@ -32,10 +36,19 @@ public class Tache {
 		return description;
 	}
 
+	public void setTempsRequise(int tempsRequise) {
+		this.tempsRequise = tempsRequise;
+	}
+	
+	public int getTempsRequise() {
+		return tempsRequise;
+	}
+	
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
+	@XmlJavaTypeAdapter(LocalDateAdapter.class)
 	public LocalDate getDateLimite() {
 		return dateLimite;
 	}

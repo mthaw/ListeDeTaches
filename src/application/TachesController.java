@@ -2,6 +2,8 @@ package application;
 
 import java.io.File;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
@@ -17,12 +19,15 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Control;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 
 public class TachesController implements Initializable {
@@ -32,6 +37,9 @@ public class TachesController implements Initializable {
 
 	@FXML
 	private TextField GTxtNom;
+	
+	@FXML
+	private TextField GTxtTempsRequise;
 
 	@FXML
 	private DatePicker GDatePickerDateLimite;
@@ -56,6 +64,9 @@ public class TachesController implements Initializable {
 
 	@FXML
 	private TableColumn<Tache, String> GColDateLimite;
+	
+	@FXML
+	private TableColumn<Tache, Integer> GColTempsRequise;
 
 	@FXML
 	private ComboBox<String> GCboValeurSur10;
@@ -65,7 +76,13 @@ public class TachesController implements Initializable {
 
 	@FXML
 	private TextField GTxtDescription;
+	
+	@FXML
+	private TextField PTxtDureeSession;
 
+	@FXML
+	private Button PBtnPrioriser;
+	
 	private ObservableList<String> list = (ObservableList<String>) FXCollections.observableArrayList("1", "2", "3", "4",
 			"5", "6", "7", "8", "9", "10");
 
@@ -81,9 +98,30 @@ public class TachesController implements Initializable {
 
 		GColNom.setCellValueFactory(new PropertyValueFactory<>("nom"));
 		GColDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
+		GColTempsRequise.setCellValueFactory(new PropertyValueFactory<>("tempsRequise"));
 		GColDateLimite.setCellValueFactory(new PropertyValueFactory<>("dateLimite"));
 		GColValeurSur10.setCellValueFactory(new PropertyValueFactory<>("valeurSur10"));
 
+		GColDescription.setCellFactory(param -> {
+			TableCell<Tache, String> cell = new TableCell<>();
+			Text text = new Text();
+			cell.setGraphic(text);
+			cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
+			text.wrappingWidthProperty().bind(GColDescription.widthProperty().subtract(5));
+			text.textProperty().bind(cell.itemProperty());
+			return cell;
+		});
+		
+		GColNom.setCellFactory(param -> {
+			TableCell<Tache, String> cell = new TableCell<>();
+			Text text = new Text();
+			cell.setGraphic(text);
+			cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
+			text.wrappingWidthProperty().bind(GColNom.widthProperty().subtract(5));
+			text.textProperty().bind(cell.itemProperty());
+			return cell;
+		});
+		
 		GTableTaches.setItems(tacheData);
 
 		GBtnModifier.setDisable(true);
@@ -103,6 +141,7 @@ public class TachesController implements Initializable {
 		tmp = new Tache();
 		tmp.setNom(GTxtNom.getText());
 		tmp.setDescription(GTxtDescription.getText());
+		tmp.setTempsRequise(Integer.parseInt(GTxtTempsRequise.getText()));
 		tmp.setDateLimite(GDatePickerDateLimite.getValue());// DOES THIS CONVERT DATE TO STRING CORRECTLY?
 		tmp.setValeurSur10(Integer.parseInt(GCboValeurSur10.getValue()));
 		tacheData.add(tmp);
@@ -113,6 +152,7 @@ public class TachesController implements Initializable {
 	void clearFields() {
 		GTxtNom.setText("");
 		GTxtDescription.setText("");
+		GTxtTempsRequise.setText("");
 		GDatePickerDateLimite.setValue(null);
 		GCboValeurSur10.setValue(null);
 	}
@@ -127,6 +167,7 @@ public class TachesController implements Initializable {
 			GCboValeurSur10.setValue(String.valueOf(tache.getValeurSur10()));
 			GTxtNom.setText(tache.getNom());
 			GTxtDescription.setText(tache.getDescription());
+			GTxtTempsRequise.setText(String.valueOf(tache.getTempsRequise()));
 			GDatePickerDateLimite.setValue(tache.getDateLimite());
 			GBtnModifier.setDisable(false);
 			GBtnDone.setDisable(false);
@@ -145,6 +186,7 @@ public class TachesController implements Initializable {
 		Tache tache = GTableTaches.getSelectionModel().getSelectedItem();
 		tache.setNom(GTxtNom.getText());
 		tache.setDescription(GTxtDescription.getText());
+		tache.setTempsRequise(Integer.parseInt(GTxtTempsRequise.getText()));
 		tache.setValeurSur10(Integer.parseInt(GCboValeurSur10.getValue()));
 		tache.setDateLimite(GDatePickerDateLimite.getValue());
 		GTableTaches.refresh();
@@ -293,6 +335,68 @@ public class TachesController implements Initializable {
 			}
 			saveTacheDataToFile(file);
 		}
+	}
+	
+	@FXML
+	private void prioriserTaches() {	
+		ObservableList<Tache> taches = GTableTaches.getItems();
+		LocalDate aujourdhui = LocalDate.now();
+		
+		int n = taches.size(), w = Integer.parseInt(PTxtDureeSession.getText());
+		
+		int dp[][] = new int[n+1][w+1]; 
+		
+		for(int i = 1; i <= n; i++) {
+			Period periode = Period.between(aujourdhui, taches.get(i).getDateLimite());
+			if(periode.getDays() <= 0) {
+				int c = taches.get(i).getTempsRequise(), v = taches.get(i).getValeurSur10();
+				for(int j = 1; j <= w; j++) {
+					dp[i][j] = Math.max(dp[i-1][j], dp[i-1][j-c]+v);
+				}
+			}
+		}
+
+		for(int i = 1; i <= n; i++) {
+			Period periode = Period.between(aujourdhui, taches.get(i).getDateLimite());
+			if(periode.getDays() == 1) {
+				int c = taches.get(i).getTempsRequise(), v = taches.get(i).getValeurSur10();
+				for(int j = 1; j <= w; j++) {
+					dp[i][j] = Math.max(dp[i-1][j], dp[i-1][j-c]+v);
+				}
+			}
+		}
+		
+		for(int i = 1; i <= n; i++) {
+			Period periode = Period.between(aujourdhui, taches.get(i).getDateLimite());
+			if(periode.getDays() == 2) {
+				int c = taches.get(i).getTempsRequise(), v = taches.get(i).getValeurSur10();
+				for(int j = 1; j <= w; j++) {
+					dp[i][j] = Math.max(dp[i-1][j], dp[i-1][j-c]+v);
+				}
+			}
+		}
+		
+		for(int i = 1; i <= n; i++) {
+			Period periode = Period.between(aujourdhui, taches.get(i).getDateLimite());
+			if(periode.getDays() == 3) {
+				int c = taches.get(i).getTempsRequise(), v = taches.get(i).getValeurSur10();
+				for(int j = 1; j <= w; j++) {
+					dp[i][j] = Math.max(dp[i-1][j], dp[i-1][j-c]+v);
+				}
+			}
+		}
+		
+		
+		for(int i = 1; i <= n; i++) {
+			Period periode = Period.between(aujourdhui, taches.get(i).getDateLimite());
+			if(periode.getDays() > 3) {
+				int c = taches.get(i).getTempsRequise(), v = taches.get(i).getValeurSur10();
+				for(int j = 1; j <= w; j++) {
+					dp[i][j] = Math.max(dp[i-1][j], dp[i-1][j-c]+v);
+				}
+			}
+		}
+		
 	}
 
 }
