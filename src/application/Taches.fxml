@@ -8,7 +8,7 @@
 
 <AnchorPane prefHeight="649.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.TachesController">
    <children>
-      <AnchorPane prefHeight="759.0" prefWidth="612.0">
+      <AnchorPane prefHeight="807.0" prefWidth="700.0">
          <children>
             <MenuBar layoutY="4.0" prefHeight="32.0" prefWidth="700.0">
               <menus>
@@ -22,7 +22,7 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Edit">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="Delete" />
+                    <MenuItem mnemonicParsing="false" onAction="#handleStats" text="Statistiques" />
                   </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Help">
@@ -32,13 +32,52 @@
                 </Menu>
               </menus>
             </MenuBar>
-            <TabPane layoutY="36.0" prefHeight="724.0" prefWidth="700.0" tabClosingPolicy="UNAVAILABLE">
+            <TabPane layoutY="36.0" prefHeight="771.0" prefWidth="700.0" tabClosingPolicy="UNAVAILABLE">
               <tabs>
+                  <Tab text="Bienvenue">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <Text layoutX="66.0" layoutY="182.0" strokeType="OUTSIDE" strokeWidth="0.0" text=" Cette application permet de maintenir une liste de taches a faire, et d'optimizer l'utilisation du temps pendant des sesssions de travail, en utilisant un algorithme d'optimisation complexe." wrappingWidth="567.6708984375">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Text>
+                              <Text layoutX="70.0" layoutY="71.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Bienvenue au Priorisateur de Taches !">
+                                 <font>
+                                    <Font size="34.0" />
+                                 </font>
+                              </Text>
+                              <Text fill="#000000a9" layoutX="66.0" layoutY="298.0" strokeType="OUTSIDE" strokeWidth="0.0" text="i. Pour gérer les tâches, naviguer vers l'onglet &quot;Gestionnaire&quot;. Ajouter toutes les taches qui doivent etres completes" wrappingWidth="567.6708984375">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Text>
+                              <Text fill="#000000a9" layoutX="66.0" layoutY="410.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ii. Pour faire la priorisation des taches pour un session de travail, naviguer vers l'onglet &quot;Priorisateur&quot;. Entrer la duree de la session de travail. Les taches a faire, qui maximisent l'utilisation de votre temps figureront dans le tableau !" wrappingWidth="567.6708984375">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Text>
+                              <Button layoutX="567.0" layoutY="664.0" mnemonicParsing="false" onAction="#quitter" style="-fx-background-color: pink;" text="Quitter" />
+                              <Text fill="#000000a9" layoutX="66.0" layoutY="572.0" strokeType="OUTSIDE" strokeWidth="0.0" text="iii. Pour analyzer le flux de travail / charge de travail, cliquer sur le bouton qui figure en base de tous les autres onglets" wrappingWidth="567.6708984375">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Text>
+                              <Text fill="RED" layoutX="66.0" layoutY="119.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Avez-vous trop de taches a completer en peu de temps?" textAlignment="CENTER" wrappingWidth="567.6708984375">
+                                 <font>
+                                    <Font size="21.0" />
+                                 </font>
+                              </Text>
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </Tab>
                 <Tab text="Gestionnaire">
                      <content>
-                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                        <AnchorPane prefHeight="711.0" prefWidth="700.0">
                            <children>
-                              <TableView fx:id="GTableTaches" layoutX="50.0" layoutY="80.0" prefHeight="306.0" prefWidth="600.0">
+                              <TableView fx:id="GTableTaches" layoutX="50.0" layoutY="80.0" prefHeight="306.0" prefWidth="602.0">
                                  <columns>
                                     <TableColumn fx:id="GColNom" maxWidth="110.0" minWidth="110.0" prefWidth="110.0" text="Nom" />
                                     <TableColumn fx:id="GColDescription" maxWidth="116.0" minWidth="116.0" prefWidth="116.0" text="Desciription" />
@@ -63,7 +102,7 @@
                                     <DatePicker fx:id="GDatePickerDateLimite" prefHeight="31.0" prefWidth="328.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                     <ComboBox fx:id="GCboValeurSur10" prefHeight="31.0" prefWidth="331.0" promptText="Choix Valeur" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                     <Label text="Temps requise (minutes)" GridPane.rowIndex="2" />
-                                    <TextField fx:id="GTxtTempsRequise" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                    <TextField fx:id="GTxtTempsRequise" onKeyTyped="#verifNum" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                  </children>
                                  <columnConstraints>
                                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -85,6 +124,7 @@
                                     <Button fx:id="GBtnDone" mnemonicParsing="false" onAction="#deleteTache" prefHeight="31.0" prefWidth="183.0" style="-fx-background-color: lightgreen;" text="Marquer comme fait" />
                                  </children>
                               </HBox>
+                              <Button layoutY="700.0" mnemonicParsing="false" onAction="#handleStats" prefHeight="31.0" prefWidth="700.0" style="-fx-background-color: orange;" text="Voir flux de travail" />
                            </children>
                         </AnchorPane>
                      </content>
@@ -93,6 +133,17 @@
                      <content>
                         <AnchorPane prefHeight="200.0" prefWidth="200.0">
                            <children>
+                                 <TableView fx:id="PTableTaches" layoutX="19.0" layoutY="164.0" prefHeight="306.0" prefWidth="662.0">
+	                                 <columns>
+	                                	<TableColumn fx:id="PColNum" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" text="No." />
+	                                    <TableColumn fx:id="PColNom" maxWidth="110.0" minWidth="110.0" prefWidth="110.0" text="Nom" />
+	                                    <TableColumn fx:id="PColDescription" maxWidth="116.0" minWidth="116.0" prefWidth="116.0" text="Desciription" />
+	                                    <TableColumn fx:id="PColTempsRequise" maxWidth="160.0" minWidth="160.0" prefWidth="160.0" text="Temps requise (min)" />
+	                                    <TableColumn fx:id="PColDateLimite" prefWidth="107.0" text="Date limite" />
+	                                    <TableColumn fx:id="PColValeurSur10" prefWidth="107.0" text="Valeur sur 10" />
+	                                 </columns>
+                              	</TableView>
+                              
                               <Text layoutX="92.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Prioritisateur de session de travail">
                                  <font>
                                     <Font size="29.0" />
@@ -105,6 +156,8 @@
                                     <Button fx:id="PBtnPrioriser" mnemonicParsing="false" onAction="#prioriserTaches" prefHeight="31.0" prefWidth="161.0" style="-fx-background-color: lightblue;" text="Prioriser mes tâches !" />
                                  </children>
                               </HBox>
+                              <Button layoutX="584.0" layoutY="485.0" mnemonicParsing="false" onAction="#sessionFini" style="-fx-background-color: lightgreen;" text="Session Fini" />
+                              <Button layoutY="700.0" mnemonicParsing="false" onAction="#handleStats" prefHeight="31.0" prefWidth="700.0" style="-fx-background-color: orange;" text="Voir flux de travail" />
                            </children>
                         </AnchorPane>
                      </content>

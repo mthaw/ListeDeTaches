@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.DateStat">
+   <children>
+      <AnchorPane prefHeight="557.0" prefWidth="1241.0">
+         <children>
+            <Label layoutX="403.0" layoutY="43.0" text="Nombre de taches dues par jour, pour une semaine">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <BarChart fx:id="barChart" layoutX="36.0" layoutY="89.0" prefHeight="400.0" prefWidth="1187.0">
+              <xAxis>
+                <CategoryAxis side="BOTTOM" fx:id="xAxis" />
+              </xAxis>
+              <yAxis>
+                <NumberAxis side="LEFT" upperBound="10.0" />
+              </yAxis>
+            </BarChart>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

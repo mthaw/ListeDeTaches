@@ -6,6 +6,7 @@ import java.util.Date;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 public class Tache {
+	private int num;
 	private String nom;
 	private String description;
 	private int tempsRequise;
@@ -17,6 +18,7 @@ public class Tache {
 	}
 
 	public Tache(String nom, String description) {
+		this.num = 0;
 		this.nom = nom;
 		this.description = description;
 		this.tempsRequise = 0;
@@ -24,6 +26,14 @@ public class Tache {
 		this.valeurSur10 = 0;
 	}
 
+	public int getNum() {
+		return num;
+	}
+	
+	public void setNum(int num) {
+		this.num = num;
+	}
+	
 	public String getNom() {
 		return nom;
 	}
