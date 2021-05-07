@@ -692,17 +692,20 @@ public class TachesController implements Initializable {
 	}
 
 	/**
-	 * Methode qui vide le TableViewe 
+	 * Methode qui vide le TableView de taches a faire sur l'onglet priorisateur (lorsque l'usager termine la session)
 	 */
 	@FXML
 	private void sessionFini() {
-		ObservableList<Tache> vide = FXCollections.observableArrayList();
-		PTableTaches.setItems(vide);
+		ObservableList<Tache> vide = FXCollections.observableArrayList();//Creer une liste vide
+		PTableTaches.setItems(vide);//Attribuer la liste vide au tableau de taches (ceci enleve tout les taches)
 	}
 
+	/**
+	 * Pour quitter l'application
+	 */
 	@FXML
 	private void quitter() {
-		System.exit(0);
+		System.exit(0);//Quitter l'application (fermer le stage)
 	}
 
 }
