@@ -48,12 +48,12 @@
                                     <Font size="34.0" />
                                  </font>
                               </Text>
-                              <Text fill="#000000a9" layoutX="66.0" layoutY="298.0" strokeType="OUTSIDE" strokeWidth="0.0" text="i. Pour gérer les tâches, naviguer vers l'onglet &quot;Gestionnaire&quot;. Ajouter toutes les taches qui doivent etres completes" wrappingWidth="567.6708984375">
+                              <Text fill="#000000a9" layoutX="66.0" layoutY="276.0" strokeType="OUTSIDE" strokeWidth="0.0" text="i. Pour gérer les tâches, naviguer vers l'onglet &quot;Gestionnaire&quot;. Remplir les champs et ajouter toutes les taches qui doivent etres completes. Pour les taches selectionnes, il y a egalement la possibilite de le modifier, vider tout les champs (recommencer), et l'enlever de la liste (marquer comme fait)." wrappingWidth="567.6708984375">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
                               </Text>
-                              <Text fill="#000000a9" layoutX="66.0" layoutY="410.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ii. Pour faire la priorisation des taches pour un session de travail, naviguer vers l'onglet &quot;Priorisateur&quot;. Entrer la duree de la session de travail. Les taches a faire, qui maximisent l'utilisation de votre temps figureront dans le tableau !" wrappingWidth="567.6708984375">
+                              <Text fill="#000000a9" layoutX="66.0" layoutY="430.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ii. Pour faire la priorisation des taches pour un session de travail, naviguer vers l'onglet &quot;Priorisateur&quot;. Entrer la duree de la session de travail. Les taches a faire, qui maximiseront l'utilisation de votre temps et ta productivité figureront dans le tableau !" wrappingWidth="567.6708984375">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -96,7 +96,7 @@
                                     <Label text="Nom" />
                                     <Label text="Description" GridPane.rowIndex="1" />
                                     <Label text="Date limite" GridPane.rowIndex="3" />
-                                    <Label text="Valeur sur 10" GridPane.rowIndex="4" />
+                                    <Label text="Valeur / Importance sur 10" GridPane.rowIndex="4" />
                                     <TextField fx:id="GTxtNom" GridPane.columnIndex="1" />
                                     <TextField fx:id="GTxtDescription" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                     <DatePicker fx:id="GDatePickerDateLimite" prefHeight="31.0" prefWidth="328.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
@@ -144,15 +144,15 @@
 	                                 </columns>
                               	</TableView>
                               
-                              <Text layoutX="92.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Prioritisateur de session de travail">
+                              <Text layoutX="128.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Prioritisateur de session de travail">
                                  <font>
                                     <Font size="29.0" />
                                  </font>
                               </Text>
-                              <HBox layoutX="84.0" layoutY="82.0" prefHeight="100.0" prefWidth="444.0" spacing="10.0">
+                              <HBox layoutX="120.0" layoutY="82.0" prefHeight="100.0" prefWidth="444.0" spacing="10.0">
                                  <children>
                                     <Label prefHeight="21.0" prefWidth="205.0" text="Duree de la session (minutes) :" />
-                                    <TextField fx:id="PTxtDureeSession" prefHeight="31.0" prefWidth="56.0" />
+                                    <TextField fx:id="PTxtDureeSession" onKeyTyped="#verifNum" prefHeight="31.0" prefWidth="56.0" />
                                     <Button fx:id="PBtnPrioriser" mnemonicParsing="false" onAction="#prioriserTaches" prefHeight="31.0" prefWidth="161.0" style="-fx-background-color: lightblue;" text="Prioriser mes tâches !" />
                                  </children>
                               </HBox>
