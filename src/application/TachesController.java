@@ -690,8 +690,9 @@ public class TachesController implements Initializable {
 	 * Cette methode effectue la priorisation des taches. En utilisant les valeurs
 	 * de temps requise, et de valeur / importance sur 10 des taches, il choisit un
 	 * ensemble de taches qui a la somme maximale de valeurs d'importance, tout en
-	 * s'assurant que le temps totale requise est moins que la duree du session. Il
-	 * fait ceci grace a l'algorithme de programmation dynamique, "Knapsack"
+	 * s'assurant que le temps totale requise (somme) est moins que la duree du
+	 * session. Il fait ceci grace a l'algorithme de programmation dynamique,
+	 * "Knapsack" / "Sac a Dos"
 	 * 
 	 * Il priorise aussi les taches qui sont dues en premier.
 	 */
@@ -705,7 +706,7 @@ public class TachesController implements Initializable {
 																					// w = la duree de la session de
 																					// travail (en minutes)
 
-			int dp[][] = new int[n + 1][w + 1];// Creer le tableau de programmation dynamique
+			int dp[][] = new int[n + 1][w + 1];// Creer le tableau 2D de programmation dynamique
 
 			// Premier tour de l'algorithme
 			for (int i = 1; i <= n; i++) {
