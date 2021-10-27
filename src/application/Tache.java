@@ -84,5 +84,11 @@ public class Tache {
 	public void setValeurSur10(int valeurSur10) {
 		this.valeurSur10 = valeurSur10;
 	}
+	
+	/*@Override
+	public String toString() {
+		String proc = this.getDepartement() + " - " + this.getProcedure();
+		return proc;
+	}*/
 
 }
