@@ -12,7 +12,7 @@ public class DBUtilitaires {
 
 	private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
 	private static Connection connection = null;
-	private static final String connStr = "jdbc:mysql://ics4userver.tfs.ca:3306/LLLLLLLISTTTEE DEE EETEACHESS (NAME OF BD)?useSSL=false&allowPublicKeyRetrieval=true";
+	private static final String connStr="jdbc:mysql://ics4userver.tfs.ca:3306/etudiant?useSSL=false&allowPublicKeyRetrieval=true";
 
 	public static void dbConnect() throws SQLException, ClassNotFoundException {
 		try {
@@ -24,7 +24,8 @@ public class DBUtilitaires {
 		}
 
 		try {
-			connection = DriverManager.getConnection(connStr, "martin", "MDPASSESRSERSERERSERSE(CHANGEERRERERERER)");
+			//connection = DriverManager.getConnection(connStr, "martin", "MDPASSESRSERSERERSERSE(CHANGEERRERERERER)");
+			connection=DriverManager.getConnection(connStr, "etudiant", "TFS123tfs");
 		} catch (SQLException e) {
 			System.out.println("Connection non-réussi. Consulter la console " + e);
 			throw e;

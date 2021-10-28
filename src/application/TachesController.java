@@ -6,6 +6,7 @@ package application;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Date;
@@ -99,7 +100,7 @@ public class TachesController implements Initializable {
 
 	@FXML
 	private TableColumn<Tache, String> PColNum;// Colonne pour le numero de tache (pour l'ordre dans lequel elles
-												// doivent �tre faites selon le prioritiseur)
+												// doivent �tre faites selon le prioritiseur)
 
 	@FXML
 	private TableColumn<Tache, String> PColNom;// Colonne pour le nom
@@ -153,6 +154,18 @@ public class TachesController implements Initializable {
 	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+		
+		//recupérer les valeurs de la base de données
+		try
+		{
+			tacheData=TacheDAO.getAllRecords();
+		} catch (ClassNotFoundException | SQLException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 		GCboValeurSur10.setItems(list);// Attribuer les options de ComboBox "GCboValeurSur10"
 
 		// Attribuer le ValueFactory pour les cellules dans chaque colonne du TableView
@@ -269,9 +282,11 @@ public class TachesController implements Initializable {
 
 	/**
 	 * Methode pour ajouter une nouvelle tache au TableView du gestionnaire
+	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
 	 */
 	@FXML
-	void ajouter() {
+	void ajouter() throws ClassNotFoundException, SQLException {
 		if (noEmptyInput()) {// Verifier qu'il n'y a pas de champs vides
 			// Creer la nouvelle tache
 			Tache tmp = new Tache();
@@ -287,7 +302,7 @@ public class TachesController implements Initializable {
 
 			// Ajouter au liste de tout les taches (ce qui l'ajoutera au tableau)
 			tacheData.add(tmp);
-
+			TacheDAO.insertTache(GTxtNom.getText(),GTxtTempsRequise.getText(), GTxtDescription.getText(),GCboValeurSur10.getValue(),GDatePickerDateLimite.getValue().toString());
 			// Vider tous les champs
 			clearFields();
 
@@ -357,6 +372,10 @@ public class TachesController implements Initializable {
 			// Rafraichir le tableau
 			GTableTaches.refresh();
 
+			//Assurer que les changements se produisent dans la base de donnees
+			TacheDAO.updateEtudiant(tache., Nom, TempsRequis, Description, ValeurSur10, GDateLimite);
+
+			
 			// Deselectionner tous les taches
 			GTableTaches.getSelectionModel().select(null);
 
@@ -368,6 +387,10 @@ public class TachesController implements Initializable {
 			GBtnModifier.setDisable(true);
 			GBtnRecommencer.setDisable(true);
 			GBtnDone.setDisable(true);
+		
+			TacheDAO.updateEtudiant(tache.getNum(), GTxtNom.getText(), GTxtDescription.getText(), GCboValeurSur10.getValue(), Integer.parseInt(GTxtTempsRequise.getText()), GDatePickerDateLimite.getValue()));
+			//ARGUMENTS NOT WORKING
+			
 		}
 	}
 

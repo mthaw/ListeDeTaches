@@ -6,9 +6,9 @@
  * 
  * 1. L'application permet a l'usager d'entrer leurs taches a completer (nom, description, temps requise, date limite, valeur / importance sur 10), et les affiche en liste dans un tableau. L'usager peut modifier des taches, recommencer la definition d'une tache (vider tout les champs), et marquer un tache comme fait (l'enlever de la liste / l'effacer)
  * 
- * 2. L'application priorise aussi les sessions de travail de l'usager selon la duree de temps de la session, entré par l'usager. L'ensemble de taches a completer durant la session (c-ad la somme du temps requise de tout les taches doit etre inferieure ou egal au duree de la session), qui maximizent l'utilisation du temps / la productivite (c-ad qui a la somme maximale de valeurs/importance) sont affiches dans un tableau. Ces taches sont a completer pendant la session.
+ * 2. L'application priorise aussi les sessions de travail de l'usager selon la duree de temps de la session, entrï¿½ par l'usager. L'ensemble de taches a completer durant la session (c-ad la somme du temps requise de tout les taches doit etre inferieure ou egal au duree de la session), qui maximizent l'utilisation du temps / la productivite (c-ad qui a la somme maximale de valeurs/importance) sont affiches dans un tableau. Ces taches sont a completer pendant la session.
  * 
- * 3. Finalement, l'application permet de presenter a l'usager, leur flux de travail / charge de travail, en representant le nombre de taches due à chaque jour pendant une semaine, sur une graphique a barres.
+ * 3. Finalement, l'application permet de presenter a l'usager, leur flux de travail / charge de travail, en representant le nombre de taches due ï¿½ chaque jour pendant une semaine, sur une graphique a barres.
  */
 
 package application;
