@@ -8,31 +8,9 @@
 
 <AnchorPane prefHeight="649.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.TachesController">
    <children>
-      <AnchorPane prefHeight="807.0" prefWidth="700.0">
+      <AnchorPane prefHeight="771.0" prefWidth="700.0">
          <children>
-            <MenuBar layoutY="4.0" prefHeight="32.0" prefWidth="700.0">
-              <menus>
-                <Menu mnemonicParsing="false" text="File">
-                  <items>
-                    <MenuItem mnemonicParsing="false" onAction="#handleNew" text="Nouveau" />
-                        <MenuItem mnemonicParsing="false" onAction="#handleOpen" text="Ouvrir" />
-                        <MenuItem mnemonicParsing="false" onAction="#handleSave" text="Sauvegarder" />
-                        <MenuItem mnemonicParsing="false" onAction="#handleSaveAs" text="Sauvegarder sous" />
-                  </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Edit">
-                  <items>
-                    <MenuItem mnemonicParsing="false" onAction="#handleStats" text="Statistiques" />
-                  </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Help">
-                  <items>
-                    <MenuItem mnemonicParsing="false" text="About" />
-                  </items>
-                </Menu>
-              </menus>
-            </MenuBar>
-            <TabPane layoutY="36.0" prefHeight="771.0" prefWidth="700.0" tabClosingPolicy="UNAVAILABLE">
+            <TabPane prefHeight="771.0" prefWidth="700.0" tabClosingPolicy="UNAVAILABLE">
               <tabs>
                   <Tab text="Bienvenue">
                     <content>
@@ -125,6 +103,7 @@
                                  </children>
                               </HBox>
                               <Button layoutY="700.0" mnemonicParsing="false" onAction="#handleStats" prefHeight="31.0" prefWidth="700.0" style="-fx-background-color: orange;" text="Voir flux de travail" />
+                              <Label fx:id="LblTest" layoutX="50.0" layoutY="27.0" prefHeight="21.0" prefWidth="92.0" text="Test" />
                            </children>
                         </AnchorPane>
                      </content>

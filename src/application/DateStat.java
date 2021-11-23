@@ -1,4 +1,4 @@
-//Cette classe est le controlleur qui s'occupe des statistiques. Il héberge la logique pour creer des graphiques statistiques et communique et met a jour le modele et le view
+//Cette classe est le controlleur qui s'occupe des statistiques. Il hÃ©berge la logique pour creer des graphiques statistiques et communique et met a jour le modele et le view
 
 //Cette classe permet aussi de creer des objets de type DateStat. Les objets dateStat representent des graphiques statistiques. 
 package application;

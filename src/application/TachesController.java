@@ -1,4 +1,4 @@
-//Cette classe est le controller principal de l'application. Il s'occupe de la logique general, traite les actions de l'usager, et communique et met a jour le Model et le View
+//Cette classe est le controller principal de l'application. Il s'occupe de la logique general, traite les actions de l'usager, et communique et met a jour le Model et le View. Il utilise la BD a travers la classe TacheDAO.
 package application;
 
 //Imports necessaires
@@ -30,6 +30,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Control;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -45,6 +46,7 @@ public class TachesController implements Initializable {
 
 	// Definition des TableView pour les deux onglets:
 
+	private int selectedTache=0;//Variable qui contient l'ID de la tache selectionne
 	@FXML
 	private TableView<Tache> GTableTaches;// Table view de taches sur l'onglet gestionnaire
 
@@ -100,7 +102,7 @@ public class TachesController implements Initializable {
 
 	@FXML
 	private TableColumn<Tache, String> PColNum;// Colonne pour le numero de tache (pour l'ordre dans lequel elles
-												// doivent �tre faites selon le prioritiseur)
+												// doivent etre faites selon le prioritiseur)
 
 	@FXML
 	private TableColumn<Tache, String> PColNom;// Colonne pour le nom
@@ -158,11 +160,14 @@ public class TachesController implements Initializable {
 		//recupérer les valeurs de la base de données
 		try
 		{
-			tacheData=TacheDAO.getAllRecords();
-		} catch (ClassNotFoundException | SQLException e)
+			//****************************************************BASE DE DONNEES*************************************************//
+			tacheData=TacheDAO.getAllRecords();//recuperer tous les taches de la BD et les mettre dans l'ObservableList tacheData
+			//*******************************************************************************************************************//
+
+		} catch (ClassNotFoundException | SQLException e)//en cas d'exception
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e.printStackTrace();//Imprimer le stack trace pour le debogage
 		}
 		
 		
@@ -302,7 +307,12 @@ public class TachesController implements Initializable {
 
 			// Ajouter au liste de tout les taches (ce qui l'ajoutera au tableau)
 			tacheData.add(tmp);
-			TacheDAO.insertTache(GTxtNom.getText(),GTxtTempsRequise.getText(), GTxtDescription.getText(),GCboValeurSur10.getValue(),GDatePickerDateLimite.getValue().toString());
+			//****************************************************BASE DE DONNEES*************************************************//
+			TacheDAO.insertTache(GTxtNom.getText(),Integer.parseInt(GTxtTempsRequise.getText()), GTxtDescription.getText(),Integer.parseInt(GCboValeurSur10.getValue()),GDatePickerDateLimite.getValue().toString());
+			//Inserer la tache tmp dans la table gtabletaches de la base de donnees, grace a la methode insertTache de la classe TacheDAO.
+			
+			//*******************************************************************************************************************//
+			
 			// Vider tous les champs
 			clearFields();
 
@@ -326,6 +336,7 @@ public class TachesController implements Initializable {
 		GTxtTempsRequise.setText("");
 		GDatePickerDateLimite.setValue(null);
 		GCboValeurSur10.setValue(null);
+		
 	}
 
 	/**
@@ -342,11 +353,13 @@ public class TachesController implements Initializable {
 			GTxtDescription.setText(tache.getDescription());
 			GTxtTempsRequise.setText(String.valueOf(tache.getTempsRequise()));
 			GDatePickerDateLimite.setValue(tache.getDateLimite());
+			selectedTache=tache.getNum(); //GARDER LA VALEUR DE LA TACHE
 
 			// Activer les boutons pour modifier, effacer, et vider les champs
 			GBtnModifier.setDisable(false);
 			GBtnDone.setDisable(false);
 			GBtnRecommencer.setDisable(false);
+	
 		} else {
 			clearFields();
 		}
@@ -357,25 +370,29 @@ public class TachesController implements Initializable {
 	 */
 
 	@FXML
-	public void updateTache() {
+	public void updateTache() throws ClassNotFoundException, SQLException {
+	
 		if (noEmptyInput()) {// Verifier que les champs ne sont pas vides
 
 			// Modifier tous les proprietes de la tache selon les valeurs entres dans les
 			// champs
 			Tache tache = GTableTaches.getSelectionModel().getSelectedItem();
+			
 			tache.setNom(GTxtNom.getText());
 			tache.setDescription(GTxtDescription.getText());
 			tache.setTempsRequise(Integer.parseInt(GTxtTempsRequise.getText()));
 			tache.setValeurSur10(Integer.parseInt(GCboValeurSur10.getValue()));
 			tache.setDateLimite(GDatePickerDateLimite.getValue());
-
+			//****************************************************BASE DE DONNEES*************************************************//
+			TacheDAO.updateTaches(selectedTache, GTxtNom.getText(),Integer.parseInt(GTxtTempsRequise.getText()), GTxtDescription.getText(), Integer.parseInt(GCboValeurSur10.getValue()), GDatePickerDateLimite.getValue().toString());	
+			//Mettre a jour la tache selectionne dans la table gtabletaches de la BD a l'aide de la methode updateTaches de la classe TacheDAO. Son id est selectedTache - une variable globale qui stocke le ID de la tache qui est selectionne au moment
+			
+			//*******************************************************************************************************************//
+			
 			// Rafraichir le tableau
 			GTableTaches.refresh();
-
-			//Assurer que les changements se produisent dans la base de donnees
-			TacheDAO.updateEtudiant(tache., Nom, TempsRequis, Description, ValeurSur10, GDateLimite);
-
 			
+
 			// Deselectionner tous les taches
 			GTableTaches.getSelectionModel().select(null);
 
@@ -387,9 +404,6 @@ public class TachesController implements Initializable {
 			GBtnModifier.setDisable(true);
 			GBtnRecommencer.setDisable(true);
 			GBtnDone.setDisable(true);
-		
-			TacheDAO.updateEtudiant(tache.getNum(), GTxtNom.getText(), GTxtDescription.getText(), GCboValeurSur10.getValue(), Integer.parseInt(GTxtTempsRequise.getText()), GDatePickerDateLimite.getValue()));
-			//ARGUMENTS NOT WORKING
 			
 		}
 	}
@@ -398,11 +412,16 @@ public class TachesController implements Initializable {
 	 * Pour enlever une tache de la liste (et l'enlever du tableau). Une alerte est
 	 * affiche pour felicier l'tilisateur et confirmer qu'il a en effet complete la
 	 * tache et veut bien l'effacer
+	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
 	 */
 	@FXML
-	public void deleteTache() {
+	public void deleteTache() throws ClassNotFoundException, SQLException {
 		int selectedIndex = GTableTaches.getSelectionModel().getSelectedIndex();// Saisir l'indexe de la tache
 																				// selectionne
+		
+		
+		
 		if (selectedIndex >= 0) {// Verifier si une tache est selectionne
 			Alert alert = new Alert(AlertType.CONFIRMATION);// Afficher une alerte de confirmation
 			alert.setTitle("Marquer comme fait");// Mettre le de l'alerte
@@ -411,6 +430,13 @@ public class TachesController implements Initializable {
 																// la reponse d'utilisateur a "result"
 			if (result.get() == ButtonType.OK) {// Si l'utilisateur accepte
 				GTableTaches.getItems().remove(selectedIndex);// Enlever la tache
+				//*********************************************BASE DE DONNEES***************************************//	
+				TacheDAO.deleteTacheById(selectedTache);
+				//Supprimer la tache selectionne (dont l'ID est stocke dans la varaible globale selected tache) de la table gtabletaches de la BD. La methode deleteTacheById de la classe TacheDAO est utilise.
+				
+				//***************************************************************************************************//	
+				
+				
 			}
 		}
 		// Ne pas avoir un tache selectionne
@@ -561,153 +587,6 @@ public class TachesController implements Initializable {
 		}
 	}
 
-	/**
-	 * Prendre les donnees XML et les convertir en donnees de type JavaFX. Ca charge
-	 * les donnees du fichier
-	 * 
-	 * @param file c'est le fichier duquel on prend les donnees
-	 */
-
-	public void loadTacheDataFromFile(File file) {
-		try {
-			JAXBContext context = JAXBContext.newInstance(TacheListWrapper.class);// Creer un objet JAXBContext pour
-																					// faciliter le marshall /
-																					// unmarshall. On utilise une
-																					// instance de TacheListWrapper
-			Unmarshaller um = context.createUnmarshaller();// Creer un objet unmarshaller a l'aide de l'obet
-															// JAXBContext, "context"
-
-			TacheListWrapper wrapper = (TacheListWrapper) um.unmarshal(file);// Faire le unmarshal du fichier (convertir
-																				// en donnees JavaFX)
-			tacheData.clear();// Vider tacheData
-			tacheData.addAll(wrapper.getTaches());// Ajouter tout les taches dans le fichier au tacheData
-			setTacheFilePath(file);// Attribuer le path de fichiers
-
-			// Montrer le titre du fichier charge
-			Stage pStage = (Stage) GTableTaches.getScene().getWindow();
-			pStage.setTitle(file.getName());
-
-		} catch (Exception e) {// Gerer les exceeptions si les donnees ne peuvent pas etres trouves
-			Alert alert = new Alert(AlertType.ERROR);// Creer une alerte de type erreur
-			alert.setTitle("Erreur");// Mettre le titre de l'alerte
-			alert.setHeaderText("Les donnees n'ont pas ete trouvees");// Mettre l'entete de l'alerte
-			alert.setContentText("Les donnees ne pouvaient pas etre trouvees dans le fichier: \n" + file.getPath());// Mettre
-																													// le
-																													// contenu
-																													// de
-																													// l'alerte
-			alert.showAndWait();// Afficher l'alerte et attendre a ce que l'utilisateur le resolve
-		}
-	}
-
-	/**
-	 * Prendre les donnees de type JavaFX et les convertir en donnees XML
-	 * 
-	 * @param file c'est le fichier dans lequel nous voulons sauvegarder
-	 */
-	public void saveTacheDataToFile(File file) {
-		try {
-			JAXBContext context = JAXBContext.newInstance(TacheListWrapper.class);// Creer un objet JAXBContext pour
-																					// faciliter le marshall /
-																					// unmarshall. On utilise une
-																					// instance de TacheListWrapper
-			Marshaller m = context.createMarshaller();// Creer un objet marshaller a l'aide de l'obet JAXBContext,
-														// "context"
-			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);// Mettre la propriete de JAXB_FORMATTED_OUTPUT a true
-			TacheListWrapper wrapper = new TacheListWrapper();// Creer un obbjet TacheListWrapper, "wrapper"
-			wrapper.setTaches(tacheData);// Mettre tous les taches dans tacheData dans la liste de taches de l'objet
-											// "wrapper"
-
-			m.marshal(wrapper, file);// Faire le marshall du fichier (convertir en XML)
-
-			setTacheFilePath(file);// Attribuer le path de fichier
-
-			// Montrer le titre du fichier
-			Stage pStage = (Stage) GTableTaches.getScene().getWindow();
-			pStage.setTitle(file.getName());
-
-		} catch (Exception e) {// Gerer les exceptions si les donnees ne peuvent pas etre sauvegardees
-			Alert alert = new Alert(AlertType.ERROR);// Creer une alerte de type erreur
-			alert.setTitle("Erreur");// Mettre le titre de l'alerte
-			alert.setHeaderText("Donnees non sauvegardees");// Mettre l'entete de l'alerte
-			alert.setContentText("Les donnees ne pouvaient pas etre sauvegardees dans le fichier: \n" + file.getPath());// Mettre
-																														// le
-																														// contenu
-																														// de
-																														// l'alerte
-			alert.showAndWait();// Afficher l'alerte et attendre a ce que l'utilisateur le resolve
-		}
-	}
-
-	/**
-	 * Commencer un nouveau fichier
-	 */
-	@FXML
-	private void handleNew() {
-		// Faire le re-set de tous les taches et le file path
-		gettacheData().clear();// Enlever tout les tache de tacheData (le vider)
-		setTacheFilePath(null);// Attribuer un file path nulle. (Pour donner un file path non-nulle,
-								// l'utilisateur doit sauvegarder (plus tard))
-	}
-
-	/**
-	 * Permettre a l'usager de choisir le fichier a ouvrir
-	 */
-	@FXML
-	private void handleOpen() {
-		FileChooser fileChooser = new FileChooser();// Creer un objet FileChooser
-		// Creer un filtre sur l'extension du fichier a chercher
-		FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml");
-		// Ajouter le filtre a notre fileChooser
-		fileChooser.getExtensionFilters().add(extFilter);
-
-		// Faire afficher la dialogue
-		File file = fileChooser.showOpenDialog(null);
-
-		// Charger le data du fichier "file"
-		if (file != null) {
-			loadTacheDataFromFile(file);
-		}
-	}
-
-	/**
-	 * Sauvegarde le fichier correspondant au tache qui est actif Si il n'y a pas de
-	 * fichier, faire que le menu "sauvegarder sous" s'affiche
-	 */
-
-	@FXML
-	private void handleSave() {
-		File tacheFile = getTacheFilePath();// Chercher le file path du fichier
-		if (tacheFile != null) {// Si ce n'est pas nulle, sauvegarder
-			saveTacheDataToFile(tacheFile);
-		} else {// Sinon (c'est nulle)
-			handleSaveAs();// Il faut creer le file path en faisant SaveAs
-		}
-	}
-
-	/**
-	 * Ouvrir le FileChooser afin de trouver le file path (chemin), et puis
-	 * sauvegarder le fichier.
-	 */
-	@FXML
-	private void handleSaveAs() {
-		FileChooser fileChooser = new FileChooser();// Creer un fileChooser
-		// Creer un filtre d'extensions de fichier
-		FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml");
-		// Ajouter le filtre a notre file chooser
-		fileChooser.getExtensionFilters().add(extFilter);
-
-		File file = fileChooser.showSaveDialog(null);// Ouvrir le dialogue FileChooser et permettre l'utilisateur
-														// d'entrer le file path. Attribuer le file path a un objet
-														// "File"
-
-		if (file != null) {// Si le file path n'est pas mulle
-			if (!file.getPath().endsWith(".xml")) {// Si c'est un file path sans ".xml" en suffixe
-				file = new File(file.getPath() + ".xml");// Ajouter le ".xml" en suffixe
-			}
-			saveTacheDataToFile(file);// Sauvegarder le fichier
-		}
-	}
 
 	/**
 	 * Cette methode effectue la priorisation des taches. En utilisant les valeurs
